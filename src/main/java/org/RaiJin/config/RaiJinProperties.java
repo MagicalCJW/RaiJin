@@ -8,6 +8,9 @@ import org.springframework.core.Ordered;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * RaiJin configuration properties
+ */
 @ConfigurationProperties("RaiJin")
 @Data
 public class RaiJinProperties {

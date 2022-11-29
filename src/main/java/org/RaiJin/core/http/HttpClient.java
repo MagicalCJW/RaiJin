@@ -1,6 +1,6 @@
 package org.RaiJin.core.http;
 
-import org.RaiJin.core.config.MappingProperties;
+import org.RaiJin.config.MappingProperties;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;

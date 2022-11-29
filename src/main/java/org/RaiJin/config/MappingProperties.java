@@ -1,4 +1,4 @@
-package org.RaiJin.core.config;
+package org.RaiJin.config;
 
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;

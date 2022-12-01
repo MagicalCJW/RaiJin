@@ -19,7 +19,11 @@ public class ResponseBody {
 
     protected OriginReqBody reqBody;
 
-    public String getBody() {
+    public byte[] getBody() {
+        return respBody;
+    }
+
+    public String getBodyAsString() {
         return BodyConverter.convertBodyToString(respBody);
     }
 

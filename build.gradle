@@ -24,6 +24,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.auth0:java-jwt:4.2.1'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
+    implementation 'org.aspectj:aspectjweaver:1.9.9.1'
 }
 
 test {

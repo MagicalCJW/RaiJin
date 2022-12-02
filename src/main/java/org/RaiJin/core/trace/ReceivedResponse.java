@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import org.RaiJin.util.BodyConverter;
+import org.RaiJin.core.util.BodyConverter;
 import org.springframework.http.HttpStatus;
 
 @Data

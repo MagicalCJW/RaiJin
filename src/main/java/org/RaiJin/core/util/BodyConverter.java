@@ -1,4 +1,4 @@
-package org.RaiJin.util;
+package org.RaiJin.core.util;
 
 import java.nio.charset.StandardCharsets;
 

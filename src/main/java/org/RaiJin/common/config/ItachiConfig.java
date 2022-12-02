@@ -1,12 +1,9 @@
-package org.RaiJin.config;
+package org.RaiJin.common.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties({RaiJinProperties.class, ItachiProperties.class})
-public class RaiJinConfiguration {
-
-
-
+@EnableConfigurationProperties()
+public class ItachiConfig {
 }

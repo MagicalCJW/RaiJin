@@ -9,13 +9,20 @@ import org.RaiJin.common.auth.AuthConstant;
 import org.RaiJin.common.auth.Sessions;
 import org.RaiJin.common.crypto.Sign;
 import org.RaiJin.common.env.EnvConfig;
+import org.RaiJin.common.services.SecurityConstant;
+import org.RaiJin.common.services.Service;
+import org.RaiJin.common.services.ServiceDirectory;
 import org.RaiJin.config.MappingProperties;
 import org.RaiJin.core.http.RequestBody;
+import org.RaiJin.exception.RaiJinException;
+import org.RaiJin.exception.RaiJinNoAuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +51,51 @@ public class AuthRequestInterceptor implements PreForwardRequestInterceptor{
         // sanitize incoming requests and set authorization information
         String authorization = this.setAuthHeader(data,mapping);
 
+        this.validateRestrict(mapping);
+        this.validateSecurity(data, mapping, authorization);
+    }
+
+    private void validateSecurity(RequestBody data, MappingProperties mapping, String authorization) {
+        // check perimeter authorization
+        if(AuthConstant.AUTHORIZATION_ANONYMOUS_WEB.equals(authorization)) {
+            Service service = this.getService(mapping);
+            if(SecurityConstant.SEC_PUBLIC != service.getSecurity()) {
+                log.info("Anonymous user want to access secure service, redirect to login");
+                // send to login
+                String scheme = "https";
+                if(envConfig.isDebug())
+                    scheme = "http";
+                int port = data.getOriginReq().getServerPort();
+                try {
+                    URI redirectUrl = new URI(scheme,null,"www"+envConfig.getExternalApex(),
+                            port,"/login/",null,null);
+                    String returnTo = data.getHost()+data.getUri();
+                    String fullRedirectUrl = redirectUrl +"?return_to="+returnTo;
+
+                    data.setNeedRedirect(true);
+                    data.setRedirectUrl(fullRedirectUrl);
+                } catch (URISyntaxException e) {
+                    log.error("fail to build redirect url",e);
+                }
+            }
+        }
+    }
+
+    private void validateRestrict(MappingProperties mapping) {
+        Service service = getService(mapping);
+        if(service.isRestrictDev()&&!envConfig.isDebug()) {
+            throw new RaiJinException("This service is restrict to dev and test env only");
+        }
+    }
+
+    private Service getService(MappingProperties mapping) {
+        String host = mapping.getHost();
+        String subDomain = host.replace("."+envConfig.getExternalApex(),"");
+        Service service = ServiceDirectory.getMapping().get(subDomain.toLowerCase());
+        if(service == null) {
+            throw new RaiJinException("Unsupported sub-domain "+ subDomain);
+        }
+        return service;
     }
 
     private String setAuthHeader(RequestBody data,MappingProperties mapping) {
@@ -53,8 +105,25 @@ public class AuthRequestInterceptor implements PreForwardRequestInterceptor{
         Session session = this.getSession(data.getOriginReq());
         if(session != null) {
             if(session.isSupport()) {
-                authorization = AuthConstant.
+                authorization = AuthConstant.AUTHORIZATION_SUPPORT_USER;
+            } else {
+                authorization = AuthConstant.AUTHORIZATION_AUTHENTICATED_USER;
             }
+            this.checkBannedUers(session.getUserId());
+            headers.set(AuthConstant.CURRENT_USER_HEADER,session.getUserId());
+        } else {
+            headers.remove(AuthConstant.CURRENT_USER_HEADER);
+        }
+
+        headers.set(AuthConstant.AUTHORIZATION_HEADER, authorization);
+
+        return authorization;
+    }
+
+    private void checkBannedUers(String userId) {
+        if(bannedUsers.containsKey(userId)) {
+            log.warn(String.format("Banned user accessing service - user %s",userId));
+            throw new RaiJinNoAuthException("Banned user accessing");
         }
     }
 

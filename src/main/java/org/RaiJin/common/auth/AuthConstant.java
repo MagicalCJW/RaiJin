@@ -16,4 +16,7 @@ public class AuthConstant {
     // AUTHORIZATION_AUTHENTICATED_USER is set as the Authorization header to denote that
     // a request is being made by an authenticated web user
     public static final String AUTHORIZATION_AUTHENTICATED_USER = "RaiJin-authenticated";
+    // AUTH ERROR Messages
+    public static final String ERROR_MSG_DO_NOT_HAVE_ACCESS = "You do not have access to this service";
+    public static final String ERROR_MSG_MISSING_AUTH_HEADER = "Missing Authorization http header";
 }

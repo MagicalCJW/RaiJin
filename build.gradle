@@ -26,7 +26,7 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
     implementation 'org.aspectj:aspectjweaver:1.9.9.1'
     implementation 'org.modelmapper:modelmapper:3.1.0'
-    implementation 'io.sentry:sentry:6.9.0'
+    implementation 'io.sentry:sentry:6.10.0'
     implementation 'com.netflix.feign:feign-core:8.18.0'
     implementation 'tech.ibit:structlog4j-api:1.4'
 }

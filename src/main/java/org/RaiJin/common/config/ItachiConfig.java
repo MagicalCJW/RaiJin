@@ -15,9 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import tech.ibit.structlog4j.StructLog4J;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 @Configuration
@@ -44,14 +42,13 @@ public class ItachiConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SentryClient sentryClient() {
-        Sentry.init(itachiProps.getSentryDsn());
-        SentryClient sentryClient = Sentry.setR
-        sentryClient.setEnvironment(activeProfile);
-        sentryClient.setRelease(staffjoyProps.getDeployEnv());
-        sentryClient.addTag("service", appName);
-
-        return sentryClient;
+    public void sentryClient() {
+        Sentry.init(options -> {
+            options.setDsn(itachiProps.getSentryDsn());
+            options.setEnvironment(activeProfile);
+            options.setRelease(itachiProps.getDeployEnv());
+            options.setTag("service",appName);
+        });
     }
 
     @Override
@@ -64,9 +61,9 @@ public class ItachiConfig implements WebMvcConfigurer {
         return new FeignRequestHeaderInterceptor();
     }
 
-    @PreDestroy
-    public void destroy() {
-        sentryClient().close();
-    }
+//    @PreDestroy
+//    public void destroy() {
+//        sentryClient().close();
+//    }
 
 }

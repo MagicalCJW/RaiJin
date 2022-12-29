@@ -24,9 +24,9 @@ public class RequestDataExtractor {
 
     public HttpHeaders extractHttpHeaders(HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
-        Enumeration<String> headerNmes = request.getHeaderNames();
-        while(headerNmes.hasMoreElements()) {
-            String name = headerNmes.nextElement();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while(headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
             List<String> value = Collections.list(request.getHeaders(name));
             headers.put(name, value);
         }

@@ -29,6 +29,7 @@ dependencies {
     implementation 'io.sentry:sentry:6.10.0'
     implementation 'com.netflix.feign:feign-core:8.18.0'
     implementation 'tech.ibit:structlog4j-api:1.4'
+    implementation 'io.micrometer:micrometer-core:1.10.2'
 }
 
 test {

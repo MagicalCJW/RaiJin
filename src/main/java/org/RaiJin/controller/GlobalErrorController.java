@@ -1,9 +1,10 @@
 package org.RaiJin.controller;
 
+import io.sentry.Sentry;
 import io.sentry.SentryClient;
+import io.sentry.protocol.SentryId;
 import org.RaiJin.common.config.ItachiProps;
 import org.RaiJin.common.env.EnvConfig;
-import org.RaiJin.exception.RaiJinException;
 import org.RaiJin.exception.RaiJinNoAuthException;
 import org.RaiJin.view.ErrorPage;
 import org.RaiJin.view.ErrorPageFactory;
@@ -19,7 +20,6 @@ import org.springframework.web.client.ResourceAccessException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.net.SocketTimeoutException;
-import java.util.UUID;
 
 @Controller
 @SuppressWarnings("Duplicates")
@@ -29,9 +29,6 @@ public class GlobalErrorController implements ErrorController {
 
     @Autowired
     ErrorPageFactory errorPageFactory;
-
-    @Autowired
-    SentryClient sentryClient;
 
     @Autowired
     ItachiProps itachiProps;
@@ -67,11 +64,11 @@ public class GlobalErrorController implements ErrorController {
             if (envConfig.isDebug())
                 log.error("Global error handling " + exception);
             else {
-                sentryClient.sendException((Exception) exception);
-                UUID uuid = sentryClient.getContext.getLastEventId();
+                Sentry.captureException((Exception)exception);
+                SentryId uuid = Sentry.getLastEventId();
                 errorPage.setSentryErrorId(uuid.toString());
                 errorPage.setSentryPublicDsn(itachiProps.getSentryDsn());
-                log.warn("reported error to sentry " + "id " + uuid.toString() + " error " + exception);
+                log.warn("reported error to sentry " + "id " + uuid + " error " + exception);
             }
         }
 

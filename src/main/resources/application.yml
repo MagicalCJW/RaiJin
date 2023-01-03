@@ -13,7 +13,7 @@ server:
 
 itachi:
   common:
-    sentry-dsn: ${SENTRY_DSN}
-    deploy-env: ${DEPLOY:V2}
-  signing-secret: ${SIGNING_SECRET}
+    sentry-dsn: "https://public@sentry.example.com/1"
+    deploy-env: "V2"
+  signing-secret: "019"
 

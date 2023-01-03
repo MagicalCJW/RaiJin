@@ -36,7 +36,7 @@ public class GlobalErrorController implements ErrorController {
     @Autowired
     EnvConfig envConfig;
 
-    @Override
+//    @Override
     public String getErrorPath() {
         return "/error";
     }
@@ -49,8 +49,7 @@ public class GlobalErrorController implements ErrorController {
         ErrorPage errorPage = null;
         if (exception instanceof RaiJinNoAuthException) {
             errorPage = errorPageFactory.buildForbiddenErrorPage();
-        } else if (exception instanceof ResourceAccessException) {
-            ResourceAccessException resourceAccessException = (ResourceAccessException) exception;
+        } else if (exception instanceof ResourceAccessException resourceAccessException) {
             if (resourceAccessException.contains(SocketTimeoutException.class)) {
                 errorPage = errorPageFactory.buildTimeoutErrorPage();
             }

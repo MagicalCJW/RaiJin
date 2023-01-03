@@ -11,10 +11,7 @@ import org.RaiJin.core.http.HttpClient;
 import org.RaiJin.core.http.ReqForwarder;
 import org.RaiJin.core.http.RequestDataExtractor;
 import org.RaiJin.core.http.ReverseProxyFilter;
-import org.RaiJin.core.interceptor.CacheResponseInterceptor;
-import org.RaiJin.core.interceptor.LoggingTraceInterceptor;
-import org.RaiJin.core.interceptor.PostForwardResponseInterceptor;
-import org.RaiJin.core.interceptor.PreForwardRequestInterceptor;
+import org.RaiJin.core.interceptor.*;
 import org.RaiJin.core.mappings.ConfigurationMappingsProvider;
 import org.RaiJin.core.mappings.MappingValidator;
 import org.RaiJin.core.mappings.MappingsProvider;
@@ -163,6 +160,13 @@ public class RaiJinConfiguration {
     @ConditionalOnMissingBean
     public PostForwardResponseInterceptor raiJinPostForwardResponseInterceptor() {
         return new CacheResponseInterceptor();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PreForwardRequestInterceptor raiJinPreForwardRequestInterceptor(EnvConfig envConfig) {
+        //return new NoOpPreForwardRequestInterceptor();
+        return new AuthRequestInterceptor(itachiProperties.getSigningSecret(), envConfig);
     }
 
 }

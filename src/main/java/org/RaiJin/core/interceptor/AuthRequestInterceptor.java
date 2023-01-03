@@ -18,7 +18,9 @@ import org.RaiJin.exception.RaiJinException;
 import org.RaiJin.exception.RaiJinNoAuthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -109,7 +111,7 @@ public class AuthRequestInterceptor implements PreForwardRequestInterceptor{
             } else {
                 authorization = AuthConstant.AUTHORIZATION_AUTHENTICATED_USER;
             }
-            this.checkBannedUers(session.getUserId());
+            this.checkBannedUsers(session.getUserId());
             headers.set(AuthConstant.CURRENT_USER_HEADER,session.getUserId());
         } else {
             headers.remove(AuthConstant.CURRENT_USER_HEADER);
@@ -120,7 +122,7 @@ public class AuthRequestInterceptor implements PreForwardRequestInterceptor{
         return authorization;
     }
 
-    private void checkBannedUers(String userId) {
+    private void checkBannedUsers(String userId) {
         if(bannedUsers.containsKey(userId)) {
             log.warn(String.format("Banned user accessing service - user %s",userId));
             throw new RaiJinNoAuthException("Banned user accessing");
